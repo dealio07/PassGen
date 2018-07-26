@@ -4,39 +4,36 @@ package offline;
  * @author Volodymyr Varha
  */
 
-import java.io.*;
+import java.io.IOException;
 
 public class Main {
 
     public static void main(String[] args){
-        /**
-         * Instantiating Generator object.
-         */
-        Generator generator = new Generator();
-
+        int size = Generator.sizeRegister();
+        boolean withOrWithoutChars = Generator.withOrWithoutCharacters();
         /**
          * Generating password with taken from input length of the password.
-         * @param generator.sizeRegistr()
+         * @param generator.sizeRegister()
          */
-        generator.generate(generator.sizeRegistr());
+        Generator.generate(size, withOrWithoutChars);
 
         /**
          * Asking, if user needs one more password. If it's yes, repeating generation and writing.
          * @throws IOException
          */
         try {
-            generator.repeat();
+            Generator.repeat();
         } catch (IOException e) {
             System.out.println("Can't repeat");
         }
 
         /**
          * Writing created passwords to the file.
-         * @param generator.passwords
+         * @param Generator.passwords
          * @throws IOException
          */
         try {
-            generator.inFileSave(generator.passwords);
+            Generator.inFileSave(Generator.passwords);
         } catch (IOException e) {
             System.out.println("Can't write into the file");
         }
