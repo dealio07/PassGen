@@ -17,33 +17,31 @@ class Generator {
     /**
      * Generates, saves and shows a password to user in console.
      */
-    static void generate(int size, boolean withChars){
+    static void generate(int size, boolean withChars) {
 
-        List<String> elements = new ArrayList<>();
-        StringBuilder password = new StringBuilder();
+        StringBuilder pass = new StringBuilder();
 
         System.out.println("Here is your password:");
 
         Character previousElement = 0;
-        for (int k = 0; k < size;) {
+        for (int k = 0; k < size; ) {
             Character element = randomCharGenerate(withChars);
-            boolean charsCond = element.equals(previousElement);
             boolean stringsCond = element.toString().toLowerCase().equals(previousElement.toString().toLowerCase());
-            boolean condition = charsCond || stringsCond;
-            if (!condition) {
-                elements.add(element.toString());
-                System.out.print(elements.get(k));
-                password.append(elements.get(k));
+            if (!stringsCond) {
+                String elemString = element.toString();
+                System.out.print(elemString);
+                pass.append(elemString);
                 previousElement = element;
                 k++;
             }
         }
-        passwords.add(password.toString());
+        passwords.add(pass.toString());
         System.out.println();
     }
 
     /**
      * Asks, if user want more passwords.
+     *
      * @throws IOException
      */
     static void repeat() throws IOException {
@@ -52,46 +50,13 @@ class Generator {
 
         String str = br.readLine();
 
-        switch (str) {
-            case "Yes": {
-                doIfYes();
-                break;
-            }
-            case "yes": {
-                doIfYes();
-                break;
-            }
-            case "Y": {
-                doIfYes();
-                break;
-            }
-            case "y": {
-                doIfYes();
-                break;
-            }
-            case "No": {
-                System.out.println("---------------------------\nBye\n---------------------------");
-                break;
-            }
-            case "no": {
-                System.out.println("---------------------------\nBye\n---------------------------");
-                break;
-            }
-            case "N": {
-                System.out.println("---------------------------\nBye\n---------------------------");
-                break;
-            }
-            case "n": {
-                System.out.println("---------------------------\nBye\n---------------------------");
-                break;
-            }
-            default: System.out.println("Can't get it. Try typing 'Yes/Y/yes/y' or 'No/N/no/n'");
-                repeat();
-                break;
-
-
-
+        if (yesCondition(str)) {
+            doIfYes();
         }
+    }
+
+    private static boolean yesCondition(String str) {
+        return str.equals("Yes") || str.equals("yes") || str.equals("Y") || str.equals("y");
     }
 
     private static void doIfYes() throws IOException {
@@ -108,7 +73,7 @@ class Generator {
         System.out.println("Enter size of the password below (only number):");
 
         int size;
-        if (scanner.hasNextInt()){
+        if (scanner.hasNextInt()) {
             size = scanner.nextInt();
 
         } else {
@@ -127,27 +92,7 @@ class Generator {
         boolean result = false;
         if (scanner.hasNextLine()) {
             answer = scanner.nextLine();
-            switch (answer) {
-                case "Yes": {
-                    result = true;
-                    break;
-                }
-                case "yes": {
-                    result = true;
-                    break;
-                }
-                case "Y": {
-                    result = true;
-                    break;
-                }
-                case "y": {
-                    result = true;
-                    break;
-                }
-                default:
-                    result = false;
-                    break;
-            }
+            result = yesCondition(answer);
         }
         return result;
     }
@@ -155,7 +100,7 @@ class Generator {
     /**
      * Generating string of random chars.
      */
-    private static Character randomCharGenerate(boolean withChars){
+    private static Character randomCharGenerate(boolean withChars) {
         String alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String alphabetWithChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ`~!@#$%^&*()-_=+.>,</?;:'|[{]}";
         int n = withChars ? alphabetWithChars.length() : alphabet.length();
@@ -167,16 +112,18 @@ class Generator {
 
     /**
      * Saving the password to the file Password.txt.
+     *
      * @throws IOException
      */
     static void inFileSave(List<String> passwords) throws IOException {
 
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Password.txt"),"utf-8"))) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("Password.txt"), "utf-8"))) {
             for (String pass : passwords) {
-                bw.append(pass+"\n");
+                bw.append(pass).append("\n");
             }
         } catch (IOException e) {
             System.out.println("Can't create file");
+            throw e;
         }
     }
 
